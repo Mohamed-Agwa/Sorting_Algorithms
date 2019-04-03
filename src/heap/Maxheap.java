@@ -6,11 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JLabel;
-import java.util.Random;
-import java.util.RandomAccess;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.swing.Timer;
 
 public class Maxheap
 {
@@ -33,10 +30,11 @@ public class Maxheap
     
     public void initialiseArray()
     {
-        IntStream range = IntStream.rangeClosed(0, 100);
+        IntStream range = IntStream.rangeClosed(1, 99);
         List<Integer> integers = range.boxed().collect(Collectors.toList());
         Collections.shuffle(integers);
-        
+        Collections.shuffle(integers);
+        Collections.shuffle(integers);
         for(int i=0; i<31;i++)
         {
             Heap[i] = Integer.parseInt(Integer.toString(integers.get(i)));
@@ -51,8 +49,7 @@ public class Maxheap
         }
         
         ill.displayHeapContent(Heap);
-        ill.writeLog("New Array generated!");
-        
+        ill.writeLog("New Array generated!");   
     }
     
     public void restoreArray()
@@ -157,6 +154,7 @@ public class Maxheap
     
     public void Heapsort() throws InterruptedException 
     { 
+        ill.writeLog("\nHeap Sort!\n");
         System.out.println("Heap Sort!");
         for(int i = 30; i>=1;i--)
         {
@@ -164,7 +162,10 @@ public class Maxheap
             swapLabels(0,i);
             maxHeapify(0,i);
         }
+        reverse();
+        updateHeap();
         ill.displayHeapContent(Heap);
+        ill.update(ill.getGraphics());
     }
     
     private void merge(int beg, int mid, int end)  
@@ -212,13 +213,14 @@ public class Maxheap
     }
   
     public void Mergesortcast()
-    {
+    { 
         ill.writeLog("\nMerge Sort!\n");
         System.out.println("Merge Sort!");
         Mergesort(0,30);
         updateHeap();
         ill.displayHeapContent(Heap);
     }
+    
     private void Mergesort(int beg, int end)  
     {  
         if (beg<end)  
@@ -229,6 +231,20 @@ public class Maxheap
             merge(beg, mid, end);  
         }  
     }  
+    
+    private void reverse() 
+    { 
+        int[] arr = new int[31]; 
+        int j = 31; 
+        for (int i = 0; i < 31; i++) { 
+            arr[j - 1] = Heap[i]; 
+            j = j - 1; 
+        }
+        for(int i=0;i<31;i++)
+        {
+            Heap[i] = arr[i];
+        }
+    }     
     
     public void Insertionsort() throws InterruptedException
     { 
