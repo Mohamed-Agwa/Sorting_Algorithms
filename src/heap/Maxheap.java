@@ -2,9 +2,11 @@
 package heap;
 
 import java.awt.Color;
+import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JLabel;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,8 +17,12 @@ public class Maxheap
     private int[] HeapCopy = new int[32];
     private int size; 
     private int maxsize=31;
+    private int swaps=0;
     List<JLabel> LabelList = new ArrayList<JLabel>();
     Illustration ill = new Illustration(this);
+    
+    
+    
     
     public Maxheap() 
     { 
@@ -75,11 +81,11 @@ public class Maxheap
     } 
     private int leftChild(int pos) 
     { 
-        return (2 * pos); 
+        return (2 * pos) + 1; 
     } 
     private int rightChild(int pos) 
     { 
-        return (2 * pos) + 1; 
+        return (2 * pos) + 2; 
     }
     
     private boolean isLeaf(int pos) 
@@ -93,11 +99,13 @@ public class Maxheap
     private void swap(int fpos, int spos) 
     { 
         System.out.println("Swap num1: " + Heap[fpos] + "\tnum2:" + Heap[spos]);
+        ill.writeLog("Swap num1: " + Heap[fpos] + "\t num 2: " + Heap[spos]);
+        ill.update(ill.getGraphics());
         int tmp; 
         tmp = Heap[fpos]; 
         Heap[fpos] = Heap[spos]; 
         Heap[spos] = tmp; 
-        ill.writeLog("Swap num1: " + Heap[fpos] + "\t num 2: " + Heap[spos]);
+        
     }
     
     private void swapLabels(int pos1, int pos2) throws InterruptedException
@@ -156,16 +164,27 @@ public class Maxheap
     { 
         ill.writeLog("\nHeap Sort!\n");
         System.out.println("Heap Sort!");
+        swaps = 0;
+        long startTime = System.nanoTime();
         for(int i = 30; i>=1;i--)
         {
             swap(0,i);
             swapLabels(0,i);
+            swaps++;
             maxHeapify(0,i);
         }
         reverse();
         updateHeap();
         ill.displayHeapContent(Heap);
-        ill.update(ill.getGraphics());
+        ill.update(ill.getGraphics());        
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long swapTime = (long) (swaps * pow(10,9));
+        durationInNano = durationInNano - swapTime;
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
+        ill.writeLog("Swaps: " + swaps );
+        swaps = 0;
     }
     
     private void merge(int beg, int mid, int end)  
@@ -216,7 +235,12 @@ public class Maxheap
     { 
         ill.writeLog("\nMerge Sort!\n");
         System.out.println("Merge Sort!");
+        long startTime = System.nanoTime();
         Mergesort(0,30);
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
         updateHeap();
         ill.displayHeapContent(Heap);
     }
@@ -250,25 +274,38 @@ public class Maxheap
     { 
         ill.writeLog("\nInsertion Sort!\n");
         System.out.println("Insertion Sort!");
+        swaps = 0;
+        long startTime = System.nanoTime();
         int n = Heap.length; 
         for (int i = 1; i < n; ++i) { 
             int key = Heap[i]; 
             int j = i - 1; 
             while (j >= 0 && Heap[j] < key) { 
                 swap(j+1,j);
+                swaps++;
                 swapLabels(j+1,j);
                 j = j - 1; 
             } 
             Heap[j + 1] = key; 
             updateHeap();
             ill.displayHeapContent(Heap);
-        } 
+        }
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long swapTime = (long) (swaps * pow(10,9));
+        durationInNano = durationInNano - swapTime;
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
+        ill.writeLog("Swaps: " + swaps );
+        swaps = 0;        
     } 
     
     public void Selectionsort() throws InterruptedException 
     { 
         ill.writeLog("\nSelection Sort!\n");
         System.out.println("Selection Sort!");
+        swaps = 0;
+        long startTime = System.nanoTime();        
         int n = Heap.length; 
         for (int i = 0; i < n-1; i++) 
         { 
@@ -277,26 +314,46 @@ public class Maxheap
                 if (Heap[j] > Heap[max]) 
                     max = j; 
                     swap(i,max);
+                    swaps++;
                     swapLabels(i,max);
         }
         updateHeap();
         ill.displayHeapContent(Heap);
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long swapTime = (long) (swaps * pow(10,9));
+        durationInNano = durationInNano - swapTime;
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
+        ill.writeLog("Swaps: " + swaps );
+        swaps = 0;        
     }
     
     public void bubbleSort() throws InterruptedException 
     { 
         ill.writeLog("\nBubble Sort!\n");
         System.out.println("Bubble Sort!");
+        swaps = 0;
+        long startTime = System.nanoTime();          
         int n = Heap.length; 
         for (int i = 0; i < n-1; i++) 
             for (int j = 0; j < n-i-1; j++) 
                 if (Heap[j] < Heap[j+1]) 
                 { 
                     swap(j,j+1);
+                    swaps++;
                     swapLabels(j,j+1);
                 }
         updateHeap();
         ill.displayHeapContent(Heap);
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long swapTime = (long) (swaps * pow(10,9));
+        durationInNano = durationInNano - swapTime;
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
+        ill.writeLog("Swaps: " + swaps );
+        swaps = 0; 
     } 
   
     private int partition(int p, int r) throws InterruptedException {
@@ -315,18 +372,28 @@ public class Maxheap
             if (i < j) {
                 swap(i,j);
                 swapLabels(i,j);
+                swaps++;
             } else {
                 return j;
+            }
         }
     }
-}
     public void Quicksortcast() throws InterruptedException
     {
-        ill.writeLog("\nQuick Sort!\n");
         System.out.println("Quick Sort!");
+        swaps = 0;
+        long startTime = System.nanoTime();
         Quicksort(0,30);
+        long endTime = System.nanoTime();
+        long durationInNano = (endTime - startTime);
+        long swapTime = (long) (swaps * pow(10,9));
+        durationInNano = durationInNano - swapTime;
+        long durationInMilli = (long) (durationInNano / pow(10,3));
+        ill.writeLog("\nExecution time: " + durationInMilli + " ms");
+        ill.writeLog("Swaps: " + swaps );                
         updateHeap();
         ill.displayHeapContent(Heap);
+        swaps=0;
     }
     public void Quicksort(int low, int high) throws InterruptedException 
     { 
